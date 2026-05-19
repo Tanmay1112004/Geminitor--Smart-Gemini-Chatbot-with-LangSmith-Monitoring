@@ -19,7 +19,8 @@ It offers a sleek ChatGPT-like interface built with **Streamlit**, and it even s
 ---
 ## 📸 Screenshots
 
-
+### 💬 Chat Interface
+![Chat Interface](https://github.com/Tanmay1112004/Geminitor--Smart-Gemini-Chatbot-with-LangSmith-Monitoring/raw/main/screenshots/Screenshot%202025-09-24%20125353.png)
 
 
 

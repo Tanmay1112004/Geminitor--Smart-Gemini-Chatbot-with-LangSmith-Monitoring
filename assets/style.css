@@ -1,0 +1,191 @@
+/* ===================================================
+   Geminitor Pro — Dark Glassmorphism Theme
+   =================================================== */
+
+/* --- Base Background --- */
+.stApp {
+    background: linear-gradient(135deg, #060d1b 0%, #0d1117 45%, #0a1628 100%);
+    color: #e6edf3;
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+}
+
+/* --- Animated gradient header card --- */
+.geminitor-header {
+    text-align: center;
+    padding: 28px 20px 20px;
+    background: linear-gradient(
+        135deg,
+        rgba(31, 111, 235, 0.12) 0%,
+        rgba(22, 27, 34, 0.75) 50%,
+        rgba(56, 139, 253, 0.10) 100%
+    );
+    border-radius: 18px;
+    border: 1px solid rgba(88, 166, 255, 0.22);
+    backdrop-filter: blur(14px);
+    margin-bottom: 22px;
+    box-shadow: 0 4px 30px rgba(88, 166, 255, 0.08);
+}
+
+.geminitor-header h1 {
+    font-size: 2.4rem;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    background: linear-gradient(90deg, #58a6ff 0%, #a5d8ff 50%, #79c0ff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin: 0 0 6px 0;
+    animation: headerGlow 4s ease-in-out infinite;
+}
+
+.geminitor-header p {
+    color: #8b949e;
+    margin: 0;
+    font-size: 0.95rem;
+}
+
+@keyframes headerGlow {
+    0%, 100% { filter: brightness(1); }
+    50%       { filter: brightness(1.2) drop-shadow(0 0 12px rgba(88,166,255,0.4)); }
+}
+
+/* --- Sidebar --- */
+[data-testid="stSidebar"] {
+    background: linear-gradient(180deg, #0b0f1a 0%, #161b22 100%) !important;
+    border-right: 1px solid rgba(48, 54, 61, 0.7) !important;
+}
+
+[data-testid="stSidebar"] .stMarkdown h2,
+[data-testid="stSidebar"] .stMarkdown h3 {
+    color: #58a6ff;
+}
+
+/* --- Chat message bubbles --- */
+[data-testid="stChatMessage"] {
+    background: rgba(22, 27, 34, 0.65) !important;
+    border-radius: 14px !important;
+    border: 1px solid rgba(48, 54, 61, 0.75) !important;
+    backdrop-filter: blur(12px) !important;
+    margin-bottom: 10px !important;
+    padding: 14px 16px !important;
+    transition: border-color 0.2s ease;
+}
+
+[data-testid="stChatMessage"]:hover {
+    border-color: rgba(88, 166, 255, 0.3) !important;
+}
+
+/* --- Primary buttons --- */
+.stButton > button {
+    background: linear-gradient(135deg, #1f6feb 0%, #388bfd 100%);
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    padding: 8px 18px;
+    transition: all 0.25s ease;
+}
+
+.stButton > button:hover {
+    background: linear-gradient(135deg, #388bfd 0%, #58a6ff 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(88, 166, 255, 0.3);
+}
+
+.stButton > button:active {
+    transform: translateY(0);
+}
+
+/* --- Chat input bar --- */
+[data-testid="stChatInputTextArea"],
+[data-testid="stChatInput"] textarea {
+    background: rgba(22, 27, 34, 0.9) !important;
+    border: 1px solid rgba(48, 54, 61, 0.9) !important;
+    border-radius: 12px !important;
+    color: #e6edf3 !important;
+}
+
+[data-testid="stChatInput"] {
+    border-radius: 14px !important;
+    border: 1px solid rgba(88, 166, 255, 0.2) !important;
+    background: rgba(13, 17, 23, 0.85) !important;
+}
+
+/* --- Metric cards --- */
+[data-testid="stMetric"] {
+    background: rgba(22, 27, 34, 0.7);
+    border-radius: 12px;
+    padding: 14px 16px;
+    border: 1px solid rgba(48, 54, 61, 0.7);
+    backdrop-filter: blur(8px);
+}
+
+[data-testid="stMetricValue"] {
+    color: #58a6ff !important;
+    font-weight: 700;
+}
+
+/* --- Info / success / error boxes --- */
+[data-testid="stAlert"] {
+    border-radius: 10px !important;
+    border-left-width: 4px !important;
+}
+
+/* --- Selectbox & sliders --- */
+[data-testid="stSelectbox"] > div,
+[data-testid="stSlider"] {
+    background: rgba(22, 27, 34, 0.5) !important;
+    border-radius: 8px !important;
+}
+
+/* --- Dividers --- */
+hr {
+    border-color: rgba(48, 54, 61, 0.6) !important;
+    margin: 12px 0 !important;
+}
+
+/* --- Scrollbar --- */
+::-webkit-scrollbar            { width: 6px; height: 6px; }
+::-webkit-scrollbar-track      { background: #0d1117; }
+::-webkit-scrollbar-thumb      { background: #30363d; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover{ background: #58a6ff; }
+
+/* --- Code blocks inside chat --- */
+.stMarkdown code {
+    background: rgba(110, 118, 129, 0.2) !important;
+    border-radius: 4px;
+    padding: 2px 5px;
+    color: #79c0ff !important;
+}
+
+.stMarkdown pre {
+    background: rgba(13, 17, 23, 0.85) !important;
+    border: 1px solid rgba(48, 54, 61, 0.8);
+    border-radius: 10px;
+    padding: 14px;
+}
+
+/* --- Download button --- */
+[data-testid="stDownloadButton"] button {
+    background: linear-gradient(135deg, #238636, #2ea043) !important;
+    color: white !important;
+    border-radius: 8px !important;
+}
+
+/* --- Expander --- */
+[data-testid="stExpander"] {
+    background: rgba(22, 27, 34, 0.6);
+    border: 1px solid rgba(48, 54, 61, 0.7);
+    border-radius: 10px;
+}
+
+/* --- Toggle --- */
+[data-testid="stToggle"] {
+    accent-color: #58a6ff;
+}
+
+/* --- Light mode override (when toggled) --- */
+.light-mode .stApp {
+    background: linear-gradient(135deg, #f0f4f8 0%, #ffffff 100%) !important;
+    color: #1a1a2e !important;
+}

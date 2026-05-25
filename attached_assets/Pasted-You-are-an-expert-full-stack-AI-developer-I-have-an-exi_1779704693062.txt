@@ -1,0 +1,90 @@
+You are an expert full-stack AI developer. I have an existing Python LLM chatbot 
+project called "Geminitor" built with Streamlit + LangChain + Gemini 1.5 Flash 
++ LangSmith monitoring. I want you to completely upgrade it into a 
+production-grade, final year B.Tech project level application.
+
+EXISTING CODE (main.py):
+[PASTE YOUR CURRENT main.py CODE HERE]
+
+UPGRADE REQUIREMENTS:
+
+=== FRONTEND (Most Important) ===
+- Replace basic Streamlit UI with a stunning, modern dark-themed chat interface
+- Sidebar with: model selector (gemini-1.5-flash, gemini-1.5-pro, gemini-2.0-flash), 
+  persona selector (General AI, Code Assistant, Medical Helper, Study Buddy, 
+  Creative Writer), temperature slider, max tokens slider
+- Chat bubbles with timestamps, user avatar (👤) and bot avatar (🤖)
+- Typing animation effect while bot is thinking
+- Token usage counter displayed after each response
+- Response time tracker shown under each bot reply
+- Chat history panel in sidebar showing past session titles
+- Dark gradient background with glassmorphism card style using custom CSS
+- Animated header with project name "Geminitor Pro"
+- Mobile responsive layout
+
+=== CORE FEATURES ===
+- Multi-turn conversation memory using ConversationBufferWindowMemory (last 10 turns)
+- RAG module: user can upload PDF or TXT file, bot answers from document using 
+  FAISS vector store + HuggingFace embeddings (sentence-transformers/all-MiniLM-L6-v2)
+- Multimodal: accept image upload, send to Gemini Vision for image understanding
+- Auto follow-up question suggestion after every response (already exists, keep it)
+- Clear chat button with confirmation
+- Copy response button next to each bot message
+
+=== ANALYTICS TAB ===
+- Separate "📊 Analytics" page in Streamlit multipage or tabs
+- Show: total messages sent, average response time, tokens used (bar chart), 
+  most asked topics (word cloud using wordcloud library), session timeline
+- All data stored in st.session_state and displayed with plotly charts
+
+=== LLMOPS / MONITORING ===
+- Keep existing LangSmith tracing
+- Add manual feedback buttons (👍 👎) below each response, log to LangSmith
+- Show LangSmith run ID below each response for traceability
+- Add error handling with retry logic (max 3 retries on API failure)
+
+=== EXPORT & UTILITIES ===
+- "Export Chat" button that downloads full conversation as formatted PDF 
+  using fpdf2 library
+- "Share Summary" button that uses Gemini to summarize the full conversation 
+  in 5 bullet points
+- Dark/Light mode toggle
+
+=== PROJECT STRUCTURE ===
+Generate complete multi-file structure:
+geminitor_pro/
+├── app.py # Main entry point
+├── pages/
+│ └── analytics.py # Analytics dashboard page
+├── modules/
+│ ├── chat_engine.py # LangChain chain, memory, LLM setup
+│ ├── rag_module.py # PDF/TXT upload, FAISS, embeddings
+│ ├── vision_module.py # Image upload + Gemini Vision
+│ ├── export_module.py # PDF export, chat summary
+│ └── analytics_module.py # Session tracking, charts
+├── assets/
+│ └── style.css # Custom CSS for dark theme
+├── requirements.txt # All dependencies pinned
+├── .env.example # Template for API keys
+├── Procfile # For Render deployment
+├── render.yaml # Render service config
+└── README.md # Full documentation with screenshots section
+
+=== DEPLOYMENT (RENDER) ===
+- Generate Procfile: web: streamlit run app.py --server.port $PORT --server.address 0.0.0.0
+- Generate render.yaml with correct startCommand, envVars placeholders
+- requirements.txt must include all libraries with compatible versions:
+  streamlit, langchain, langchain-google-genai, google-generativeai,
+  langchain-community, faiss-cpu, sentence-transformers, fpdf2,
+  plotly, wordcloud, matplotlib, pillow, python-dotenv, langsmith
+
+=== CODE QUALITY ===
+- Full error handling with try/except everywhere
+- .env file for all API keys (never hardcoded)
+- Modular, clean, commented code
+- Each module independently importable
+- Add docstrings to all functions
+
+Generate ALL files completely, no placeholders, no "add your code here" comments. 
+Every file must be fully working and copy-paste ready. 
+Start with app.py, then each module, then config files.

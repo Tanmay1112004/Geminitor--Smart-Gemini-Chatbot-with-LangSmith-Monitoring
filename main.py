@@ -4,13 +4,11 @@ from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
 
-# ===== LangSmith Tracking =====
-os.environ["LANGCHAIN_TRACING_V2"] = "true"
-os.environ["LANGCHAIN_API_KEY"] = "your api key"
-os.environ["LANGCHAIN_PROJECT"] = "Geminitor"
-
-# ===== Gemini API Key =====
-os.environ["GOOGLE_API_KEY"] = "your api key"
+# ===== LangSmith Tracking (optional) =====
+langsmith_key = os.environ.get("LANGCHAIN_API_KEY", "")
+if langsmith_key:
+    os.environ["LANGCHAIN_TRACING_V2"] = "true"
+    os.environ["LANGCHAIN_PROJECT"] = "Geminitor"
 
 # ===== LangChain Chain Setup =====
 system_message = "You are Geminitor, a helpful, smart chatbot that answers clearly and suggests the next follow-up question."

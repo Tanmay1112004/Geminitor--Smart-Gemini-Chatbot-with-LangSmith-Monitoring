@@ -1,16 +1,20 @@
 """
 rag_module.py — PDF / TXT ingestion into FAISS with LCEL RAG chain.
-Uses LangChain Expression Language (LCEL) — compatible with LangChain >=0.2.
+Uses GoogleGenerativeAIEmbeddings (no local model download required).
 """
 
 import os
 import tempfile
+import logging
+
 from fastapi import UploadFile
-from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_google_genai import ChatGoogleGenerativeAI, GoogleGenerativeAIEmbeddings
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.runnables import RunnablePassthrough
+
+log = logging.getLogger(__name__)
 
 
 def _format_docs(docs) -> str:
@@ -24,7 +28,6 @@ async def process_document(file: UploadFile, model: str = "gemini-2.5-flash"):
     """
     from langchain_community.document_loaders import PyPDFLoader, TextLoader
     from langchain_community.vectorstores import FAISS
-    from langchain_community.embeddings import HuggingFaceEmbeddings
 
     content = await file.read()
     suffix = ".pdf" if file.filename.lower().endswith(".pdf") else ".txt"
@@ -45,29 +48,31 @@ async def process_document(file: UploadFile, model: str = "gemini-2.5-flash"):
         except OSError:
             pass
 
-    splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=150)
-    chunks = splitter.split_documents(documents)
+    if not documents:
+        raise ValueError("No text could be extracted from the document.")
 
-    embeddings = HuggingFaceEmbeddings(
-        model_name="sentence-transformers/all-MiniLM-L6-v2",
-        model_kwargs={"device": "cpu"},
-    )
+    splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
+    chunks = splitter.split_documents(documents)
+    log.info("RAG: %d chunks from %s", len(chunks), file.filename)
+
+    # Google embeddings — fast, no download, uses existing GOOGLE_API_KEY
+    embeddings = GoogleGenerativeAIEmbeddings(model="models/text-embedding-004")
     vectorstore = FAISS.from_documents(chunks, embeddings)
-    retriever = vectorstore.as_retriever(search_kwargs={"k": 4})
+    retriever   = vectorstore.as_retriever(search_kwargs={"k": 5})
 
     llm = ChatGoogleGenerativeAI(model=model, temperature=0.2)
 
     prompt = ChatPromptTemplate.from_messages([
         (
             "system",
-            "You are a helpful assistant. Answer the question using ONLY the "
-            "document context below. If the answer is not in the context, say "
-            "\"I couldn't find that in the document.\"\n\nContext:\n{context}",
+            "You are a helpful assistant answering questions about an uploaded document.\n"
+            "Use the context excerpts below to answer. If the context does not contain "
+            "enough information, say so and answer from your general knowledge if possible.\n\n"
+            "Context:\n{context}",
         ),
         ("human", "{question}"),
     ])
 
-    # LCEL chain — invoke with a plain string question
     chain = (
         {"context": retriever | _format_docs, "question": RunnablePassthrough()}
         | prompt

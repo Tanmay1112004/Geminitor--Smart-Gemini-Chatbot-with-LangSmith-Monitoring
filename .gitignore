@@ -1,0 +1,65 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg
+*.egg-info/
+dist/
+build/
+eggs/
+parts/
+var/
+sdist/
+develop-eggs/
+.installed.cfg
+lib/
+lib64/
+
+# Virtual environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+.pythonlibs/
+
+# Secrets — never commit these
+.env
+*.key
+secrets.json
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# Replit internals
+.replit
+replit.nix
+.upm/
+.cache/
+.config/
+.local/
+.agents/
+
+# Test / temp files
+*.log
+*.tmp
+tmp/
+temp/
+
+# FAISS index files (generated at runtime)
+*.faiss
+*.index
+faiss_index/
+
+# Uploaded files (runtime only)
+uploads/

@@ -1,148 +1,135 @@
-# 🤖 Geminitor
+# 🤖 Geminitor Pro
 
-**Geminitor** is a smart, fast, and traceable chatbot powered by **Google Gemini 1.5 Flash** and **LangChain**, with full LLM observability using **LangSmith**.
-
-It offers a sleek ChatGPT-like interface built with **Streamlit**, and it even suggests follow-up questions automatically to guide deeper conversations.
+A production-grade AI chat application powered by **Google Gemini 2.5 Flash** and **LangChain**, with a ChatGPT-style dark UI built in pure HTML/CSS/JS and a **FastAPI** backend with real-time SSE streaming.
 
 ---
 
 ## ✨ Features
 
-- 🔥 Powered by **Gemini 1.5 Flash** (via Google Generative AI API)
-- 🧠 Built using **LangChain**'s composable LLM pipeline
-- 📊 Tracked and monitored with **LangSmith (LLMOps)**
-- 💬 Clean, chat-style interface with **Streamlit**
-- 🤖 Intelligent follow-up suggestions
-- ✅ Lightweight and deployable on Codespaces or Streamlit Cloud
-
+- ⚡ **Real-time streaming** — responses appear word-by-word via Server-Sent Events
+- 🧠 **Multi-turn memory** — full conversation context sent with every request
+- 🎭 **5 AI personas** — General AI, Code Assistant, Medical Helper, Study Buddy, Creative Writer
+- 📄 **Document Q&A (RAG)** — upload a PDF or TXT and ask questions about it (FAISS + Gemini Embeddings)
+- 🖼️ **Vision** — upload an image and ask Gemini to analyze it
+- 📊 **Session analytics** — message count, avg response time, token usage, recent topics
+- 📥 **Export chat** — download conversation as `.txt` or `.pdf`
+- 🌙 **Dark / Light mode** — persisted to localStorage
+- 📱 **Responsive** — mobile-friendly with collapsible sidebar
 
 ---
-## 📸 Screenshots
 
-### 💬 Chat Interface
-![Chat Interface](https://github.com/Tanmay1112004/Geminitor--Smart-Gemini-Chatbot-with-LangSmith-Monitoring/raw/main/screenshots/Screenshot%202025-09-24%20125353.png)
+## 🏗️ Architecture
 
-### 🤖 LLMOPS
-![Gemini Response](https://github.com/Tanmay1112004/Geminitor--Smart-Gemini-Chatbot-with-LangSmith-Monitoring/raw/main/screenshots/Screenshot%202025-09-24%20125122.png)
+```
+Geminitor Pro
+├── backend/                   # FastAPI backend
+│   ├── main.py                # All API routes + static file serving
+│   └── modules/
+│       ├── chat_engine.py     # LangChain + Gemini streaming chain
+│       ├── rag_module.py      # PDF/TXT → FAISS → RAG (LCEL)
+│       ├── vision_module.py   # Gemini Vision (image analysis)
+│       ├── analytics_module.py
+│       └── export_module.py   # Chat → PDF / TXT export
+└── frontend/                  # Pure HTML/CSS/JS (no framework)
+    ├── index.html
+    ├── style.css
+    ├── app.js
+    └── config.js
+```
 
+FastAPI serves both the API (`/api/*`) and the frontend static files (`/`) from a single server on port 5000.
 
-## 🚀 How to Run
+---
 
-### 🛠️ Requirements
+## 🚀 Getting Started
+
+### 1. Clone the repo
+
+```bash
+git clone https://github.com/your-username/geminitor-pro.git
+cd geminitor-pro
+```
+
+### 2. Install dependencies
 
 ```bash
 pip install -r requirements.txt
-````
+```
 
-### ✅ Add API Keys
+### 3. Set environment variables
 
-Create a `.env` file or set these environment variables manually:
+Copy `.env.example` to `.env` and fill in your keys:
+
+```bash
+cp .env.example .env
+```
 
 ```env
-# Google Gemini API Key
 GOOGLE_API_KEY=your_google_gemini_api_key
 
-# LangSmith (LLMOps) API Key
-LANGCHAIN_TRACING_V2=true
+# Optional — LangSmith tracing
 LANGCHAIN_API_KEY=your_langsmith_api_key
-LANGCHAIN_PROJECT=Geminitor
+LANGCHAIN_PROJECT=Geminitor-Pro
 ```
 
-> ⚠️ Never commit your API keys to public repositories.
+> Get a free Google Gemini API key at [aistudio.google.com](https://aistudio.google.com/app/apikey)
 
----
-
-### ▶️ Run the App
+### 4. Run the app
 
 ```bash
-streamlit run main.py
+uvicorn backend.main:app --host 0.0.0.0 --port 5000
 ```
 
-If you're using GitHub Codespaces:
-
-```bash
-streamlit run main.py --server.port 7860 --server.address 0.0.0.0
-```
-
-Then open the forwarded port.
+Open [http://localhost:5000](http://localhost:5000) in your browser.
 
 ---
 
-## 🧠 Architecture
+## 📡 API Reference
 
-```mermaid
-flowchart TD
-    UI[Streamlit Chat UI] --> LC[LangChain]
-    LC --> Gemini[Gemini 1.5 Flash]
-    LC --> LangSmith[LangSmith Tracking]
-```
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `POST` | `/api/chat/stream` | SSE streaming chat response |
+| `POST` | `/api/chat` | Non-streaming chat response |
+| `POST` | `/api/upload/pdf` | Index a PDF or TXT file for RAG |
+| `POST` | `/api/upload/image` | Analyze an image with Gemini Vision |
+| `GET`  | `/api/analytics` | Session analytics stats |
+| `POST` | `/api/export` | Export chat as `.txt` or `.pdf` |
+| `POST` | `/api/feedback` | Submit thumbs up/down feedback |
+| `GET`  | `/health` | Health check |
 
-* **Prompt engineering** via `ChatPromptTemplate`
-* **LLM execution** via `ChatGoogleGenerativeAI`
-* **Monitoring** via LangSmith's LangChain integration
-
----
-
-## 🧩 Built With
-
-* [LangChain](https://www.langchain.com/)
-* [Google Generative AI SDK](https://ai.google.dev/)
-* [LangSmith](https://smith.langchain.com/)
-* [Streamlit](https://streamlit.io/)
+Interactive docs available at `/api/docs` (Swagger UI).
 
 ---
 
-## 📄 File Structure
+## 🛠️ Tech Stack
 
-```bash
-.
-├── main.py              # Main Streamlit app
-├── requirements.txt     # Python dependencies
-└── README.md            # You're here
-```
-
----
-
-## 📦 Deployment Options
-
-| Platform            | Status                     |
-| ------------------- | -------------------------- |
-| ✅ GitHub Codespaces | Ready                      |
-| ✅ Streamlit Cloud   | Deploy easily              |
-| 🔜 Docker           | Optional container support |
+| Layer | Technology |
+|-------|-----------|
+| Backend | FastAPI, Uvicorn |
+| AI / LLM | Google Gemini 2.5 Flash via LangChain |
+| RAG | FAISS + Gemini Embeddings (LCEL pipeline) |
+| Vision | Gemini Vision multimodal API |
+| Frontend | Vanilla HTML / CSS / JS |
+| Streaming | Server-Sent Events (SSE) via `fetch` ReadableStream |
+| Export | fpdf2 |
 
 ---
 
-## 🛡️ Disclaimer
+## 🔑 Environment Variables
 
-This is a demo app for educational and prototyping purposes. Do not expose sensitive data or rely on it for production use without securing your API keys and backend.
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `GOOGLE_API_KEY` | ✅ Yes | Google Gemini API key |
+| `LANGCHAIN_API_KEY` | No | LangSmith tracing (optional) |
+| `LANGCHAIN_PROJECT` | No | LangSmith project name |
+| `LANGCHAIN_TRACING_V2` | No | Set to `true` to enable tracing |
 
 ---
 
-## 💡 Author
+## 📄 License
+
+MIT
+
+---
 
 Built by Tanmay 🚀
-With love for LLMs, clean UIs, and observability.
-
----
-
-## 🏷️ Tags
-
-`#Gemini` `#LangChain` `#LLMOps` `#LangSmith` `#Streamlit` `#Chatbot` `#OpenAIAlt` `#AI`
-
-````
-
----
-
-## 📎 Bonus: Add `requirements.txt`
-
-Here's a sample `requirements.txt` file:
-
-```txt
-streamlit
-langchain
-langchain-google-genai
-google-generativeai
-````
-
----

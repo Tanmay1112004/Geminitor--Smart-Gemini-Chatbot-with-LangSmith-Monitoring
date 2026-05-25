@@ -56,7 +56,7 @@ async def process_document(file: UploadFile, model: str = "gemini-2.5-flash"):
     log.info("RAG: %d chunks from %s", len(chunks), file.filename)
 
     # Google embeddings — fast, no download, uses existing GOOGLE_API_KEY
-    embeddings = GoogleGenerativeAIEmbeddings(model="models/text-embedding-004")
+    embeddings = GoogleGenerativeAIEmbeddings(model="models/gemini-embedding-001")
     vectorstore = FAISS.from_documents(chunks, embeddings)
     retriever   = vectorstore.as_retriever(search_kwargs={"k": 5})
 

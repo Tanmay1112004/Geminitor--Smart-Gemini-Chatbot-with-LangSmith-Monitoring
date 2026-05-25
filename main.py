@@ -16,7 +16,7 @@ prompt = ChatPromptTemplate.from_messages([
     ("system", system_message),
     ("user", "{question}")
 ])
-llm = ChatGoogleGenerativeAI(model="gemini-1.5-flash")
+llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash")
 output_parser = StrOutputParser()
 chain = prompt | llm | output_parser
 

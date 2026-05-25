@@ -206,10 +206,9 @@ async def rag_query(req: ChatRequest, x_session_id: Optional[str] = Header(None)
     if not chain:
         fail("No document uploaded for this session.", 400)
     try:
-        t0  = time.time()
-        raw = chain.invoke({"query": req.message})
-        response = raw.get("result", str(raw)) if isinstance(raw, dict) else str(raw)
-        return ok({"response": response, "response_time": round(time.time()-t0, 2)})
+        t0       = time.time()
+        response = chain.invoke(req.message)   # LCEL chain takes a plain string
+        return ok({"response": str(response), "response_time": round(time.time()-t0, 2)})
     except Exception as exc:
         fail(str(exc))
 

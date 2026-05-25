@@ -306,14 +306,48 @@ body { background: var(--bg); color: var(--text); overflow: hidden; }
 }
 .attach-menu button:hover { background: var(--hover); }
 
-/* Upload status badge */
+/* PDF upload status banner */
 #upload-banner {
-  display: none; align-items: center; gap: 8px; padding: 6px 14px;
-  margin-bottom: 8px; background: rgba(16,163,127,.1);
-  border: 1px solid rgba(16,163,127,.3); border-radius: 8px; font-size: .82rem; color: var(--accent);
+  display: none; align-items: center; gap: 10px; padding: 8px 14px;
+  margin-bottom: 8px; background: rgba(16,163,127,.12);
+  border: 1px solid rgba(16,163,127,.35); border-radius: 10px;
+  font-size: .84rem; color: var(--accent); animation: fadeSlide .25s ease;
 }
 #upload-banner.active { display: flex; }
-#upload-banner .dismiss { margin-left: auto; cursor: pointer; font-size: 1rem; }
+#upload-banner.loading { background: rgba(255,200,80,.08); border-color: rgba(255,200,80,.35); color: #f0c040; }
+#upload-banner.error   { background: rgba(229,115,115,.1);  border-color: rgba(229,115,115,.35); color: #e57373; }
+#upload-banner-dismiss {
+  margin-left: auto; background: none; border: none; color: inherit;
+  cursor: pointer; font-size: 1rem; padding: 0 3px; border-radius: 4px; line-height: 1;
+}
+#upload-banner-dismiss:hover { opacity: .7; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.spinner { display: inline-block; animation: spin .8s linear infinite; }
+
+/* Image preview area */
+#image-preview-area {
+  margin-bottom: 8px; animation: fadeSlide .2s ease;
+}
+#image-preview-area.hidden { display: none; }
+.img-preview-inner {
+  display: flex; align-items: center; gap: 12px;
+  background: var(--input-bg); border: 1px solid var(--accent);
+  border-radius: 10px; padding: 10px 14px;
+}
+#img-thumb {
+  width: 56px; height: 56px; object-fit: cover; border-radius: 8px;
+  flex-shrink: 0; border: 1px solid var(--border);
+}
+.img-preview-info { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
+#img-thumb-name { font-size: .85rem; font-weight: 600; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.img-preview-hint { font-size: .78rem; color: var(--accent); }
+.img-preview-dismiss {
+  background: none; border: 1px solid var(--border); color: var(--subtext);
+  width: 26px; height: 26px; border-radius: 50%; cursor: pointer; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center; font-size: .85rem;
+  transition: all .15s;
+}
+.img-preview-dismiss:hover { background: var(--hover); color: var(--text); }
 
 /* ── Modal (Analytics) ──────────────────────────── */
 .modal { position: fixed; inset: 0; background: rgba(0,0,0,.6); z-index: 100; display: flex; align-items: center; justify-content: center; }

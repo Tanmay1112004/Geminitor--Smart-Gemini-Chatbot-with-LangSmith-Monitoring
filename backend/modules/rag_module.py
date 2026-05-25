@@ -7,7 +7,7 @@ import os
 import tempfile
 from fastapi import UploadFile
 from langchain_google_genai import ChatGoogleGenerativeAI
-from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 
 async def process_document(file: UploadFile, model: str = "gemini-2.5-flash"):

@@ -138,11 +138,31 @@
 
     <!-- Input area -->
     <div id="input-wrapper">
+
+      <!-- PDF upload status banner (shown after successful PDF index) -->
+      <div id="upload-banner">
+        <span id="upload-banner-icon">📄</span>
+        <span id="upload-banner-text">No document loaded</span>
+        <button id="upload-banner-dismiss" onclick="dismissUpload()" title="Remove document">✕</button>
+      </div>
+
+      <!-- Image preview (shown after user picks an image, before sending) -->
+      <div id="image-preview-area" class="hidden">
+        <div class="img-preview-inner">
+          <img id="img-thumb" alt="preview" />
+          <div class="img-preview-info">
+            <span id="img-thumb-name"></span>
+            <span class="img-preview-hint">Type your question below and press Send</span>
+          </div>
+          <button class="img-preview-dismiss" onclick="clearImagePreview()" title="Remove image">✕</button>
+        </div>
+      </div>
+
       <div id="input-box">
         <button id="attach-btn" title="Attach PDF / image" onclick="toggleAttachMenu()">📎</button>
         <div id="attach-menu" class="attach-menu hidden">
           <button onclick="triggerPdfUpload()">📄 Upload PDF / TXT</button>
-          <button onclick="triggerImageUpload()">🖼️ Upload Image</button>
+          <button onclick="triggerImageUpload()">🖼️ Analyze Image</button>
         </div>
         <textarea id="msg-input"
                   placeholder="Message Geminitor Pro…"

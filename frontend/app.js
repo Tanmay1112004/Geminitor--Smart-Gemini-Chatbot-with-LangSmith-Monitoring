@@ -94,9 +94,23 @@ function onKeyDown(e) {
 }
 
 function handleSend() {
+  if (isStreaming) return;
+
+  // Image pending — route to vision endpoint
+  if (pendingImage) {
+    const ta       = document.getElementById("msg-input");
+    const question = ta.value.trim() || "Describe this image in detail.";
+    ta.value = ""; ta.style.height = "auto";
+    document.getElementById("char-count").textContent = "0";
+    document.getElementById("send-btn").disabled = true;
+    sendImageMessage(pendingImage.file, question);
+    clearImagePreview();
+    return;
+  }
+
   const ta   = document.getElementById("msg-input");
   const text = ta.value.trim();
-  if (!text || isStreaming) return;
+  if (!text) return;
   ta.value = ""; ta.style.height = "auto";
   document.getElementById("char-count").textContent = "0";
   document.getElementById("send-btn").disabled = true;
@@ -190,6 +204,55 @@ async function sendMessage(text) {
       finalizeBotMessage(el, contentEl, rawText, { ...metadata, ts: botTs });
       chatHistory.push({ role: "assistant", content: rawText, timestamp: botTs });
     }
+  } catch (err) {
+    hideTypingIndicator();
+    appendErrorMessage(err.message);
+  }
+
+  isStreaming = false;
+  document.getElementById("send-btn").disabled =
+    document.getElementById("msg-input").value.trim() === "";
+}
+
+/* ── Image message via Vision endpoint ─────────────────────────────────── */
+async function sendImageMessage(file, question) {
+  hideEmpty();
+  isStreaming = true;
+
+  const ts = formatTime(new Date());
+  // Show user message with thumbnail
+  const msgs = document.getElementById("messages");
+  const userDiv = document.createElement("div");
+  userDiv.className = "message";
+  userDiv.innerHTML = `
+    <div class="msg-inner user-inner">
+      <div class="avatar user-avatar">${getInitial()}</div>
+      <div class="msg-content">
+        <div class="msg-role">You</div>
+        <div class="user-bubble">
+          <img src="${URL.createObjectURL(file)}" style="max-width:180px;max-height:120px;border-radius:8px;display:block;margin-bottom:6px;" />
+          ${escapeHtml(question)}
+        </div>
+        <div class="msg-meta">${ts}</div>
+      </div>
+    </div>`;
+  msgs.appendChild(userDiv);
+  chatHistory.push({ role: "user", content: `[Image: ${file.name}] ${question}`, timestamp: ts });
+  updateChatHistoryList(`[Image] ${question}`);
+  scrollToBottom();
+
+  showTypingIndicator();
+  const form = new FormData();
+  form.append("file", file);
+  try {
+    const res  = await fetch(`/api/upload/image?question=${encodeURIComponent(question)}`,
+                              { method: "POST", headers: { "X-Session-ID": sessionId }, body: form });
+    const json = await res.json();
+    if (!json.success) throw new Error(json.detail?.error || json.error || "Vision error");
+    hideTypingIndicator();
+    const botTs = formatTime(new Date());
+    appendBotMessage(json.data.response, { ts: botTs });
+    chatHistory.push({ role: "assistant", content: json.data.response, timestamp: botTs });
   } catch (err) {
     hideTypingIndicator();
     appendErrorMessage(err.message);
@@ -400,40 +463,74 @@ function closeAttachMenu() {
 async function onPdfSelected(input) {
   const file = input.files[0];
   if (!file) return;
-  showToast(`Indexing ${file.name}…`);
+  input.value = "";
+
+  // Show loading state in banner immediately
+  setBanner("loading", `<span class="spinner">⏳</span> Indexing <strong>${escapeHtml(file.name)}</strong>…`);
+
   const form = new FormData();
   form.append("file", file);
   try {
     const res  = await fetch("/api/upload/pdf", { method: "POST", headers: { "X-Session-ID": sessionId }, body: form });
     const json = await res.json();
-    if (!json.success) throw new Error(json.error);
+    if (!json.success) throw new Error(json.detail?.error || json.error || "Upload failed");
     ragActive = true;
+    setBanner("active", `📄 <strong>${escapeHtml(file.name)}</strong> loaded — Document Q&amp;A active`);
     updateRagBadge(true, file.name);
-    showToast(`✅ ${file.name} indexed!`);
-  } catch (e) { showToast("❌ " + e.message, true); }
-  input.value = "";
+    document.getElementById("msg-input").placeholder = `Ask anything about ${file.name}…`;
+  } catch (e) {
+    setBanner("error", `❌ ${escapeHtml(e.message)}`);
+    ragActive = false;
+  }
 }
 
-async function onImageSelected(input) {
+function onImageSelected(input) {
   const file = input.files[0];
   if (!file) return;
-  const question = prompt("What would you like to know about this image?", "Describe this image in detail.") || "Describe this image in detail.";
-  showToast(`Analyzing image…`);
-  const form = new FormData();
-  form.append("file", file);
-  try {
-    const res  = await fetch(`/api/upload/image?question=${encodeURIComponent(question)}`, { method: "POST", headers: { "X-Session-ID": sessionId }, body: form });
-    const json = await res.json();
-    if (!json.success) throw new Error(json.error);
-    hideEmpty();
-    const ts = formatTime(new Date());
-    appendUserMessage(`[Image: ${file.name}] ${question}`, ts);
-    chatHistory.push({ role: "user", content: `[Image: ${file.name}] ${question}`, timestamp: ts });
-    const botTs = formatTime(new Date());
-    appendBotMessage(json.data.response, { ts: botTs });
-    chatHistory.push({ role: "assistant", content: json.data.response, timestamp: botTs });
-  } catch (e) { showToast("❌ " + e.message, true); }
   input.value = "";
+
+  // Store file and show thumbnail preview — user types question then hits Send
+  pendingImage = { file };
+
+  const reader = new FileReader();
+  reader.onload = (ev) => {
+    document.getElementById("img-thumb").src     = ev.target.result;
+    document.getElementById("img-thumb-name").textContent = file.name;
+    document.getElementById("image-preview-area").classList.remove("hidden");
+  };
+  reader.readAsDataURL(file);
+
+  const ta = document.getElementById("msg-input");
+  ta.placeholder = "Ask about this image… (or press Send for a full description)";
+  ta.focus();
+  // Enable send button so user can submit with empty input (defaults to "Describe")
+  document.getElementById("send-btn").disabled = false;
+}
+
+function clearImagePreview() {
+  pendingImage = null;
+  document.getElementById("image-preview-area").classList.add("hidden");
+  document.getElementById("img-thumb").src     = "";
+  document.getElementById("img-thumb-name").textContent = "";
+  document.getElementById("msg-input").placeholder = "Message Geminitor Pro…";
+  onInputChange();
+}
+
+/* ── Upload banner helpers ─────────────────────────────────────────────── */
+function setBanner(state, html) {
+  const el = document.getElementById("upload-banner");
+  el.className = state === "active" ? "active" : state === "loading" ? "active loading" : "active error";
+  document.getElementById("upload-banner-text").innerHTML = html;
+  // Hide dismiss button while loading
+  document.getElementById("upload-banner-dismiss").style.display = state === "loading" ? "none" : "";
+}
+
+function dismissUpload() {
+  ragActive = false;
+  document.getElementById("upload-banner").className = "";   // hide
+  document.getElementById("msg-input").placeholder = "Message Geminitor Pro…";
+  updateRagBadge(false);
+  fetch("/api/history", { method: "DELETE", headers: { "X-Session-ID": sessionId } });
 }
 
 function updateRagBadge(active, filename) {

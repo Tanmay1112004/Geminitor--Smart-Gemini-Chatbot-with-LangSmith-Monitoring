@@ -4,6 +4,16 @@ A production-grade AI chat application powered by **Google Gemini 2.5 Flash** an
 
 ---
 
+## Demo Images
+
+![demo]()
+
+
+
+
+---
+
+
 ## ✨ Features
 
 - ⚡ **Real-time streaming** — responses appear word-by-word via Server-Sent Events

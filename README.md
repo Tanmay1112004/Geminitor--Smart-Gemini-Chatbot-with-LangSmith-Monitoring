@@ -10,6 +10,10 @@ A production-grade AI chat application powered by **Google Gemini 2.5 Flash** an
 
 ![demo](https://github.com/Tanmay1112004/Geminitor--Smart-Gemini-Chatbot-with-LangSmith-Monitoring/blob/main/demo_app_screenshots/Screenshot_3-6-2026_184213_79ee36a2-bae9-456b-aace-34eb5de20832-00-1y86fvg5ujd54.pike.replit.dev.jpeg)
 
+![demo](https://github.com/Tanmay1112004/Geminitor--Smart-Gemini-Chatbot-with-LangSmith-Monitoring/blob/main/demo_app_screenshots/Screenshot_3-6-2026_185856_geminitor-smart-gemini-chatbot-with-lang-smith--kshirsagarrutuj.replit.app.jpeg)
+
+![demo](https://github.com/Tanmay1112004/Geminitor--Smart-Gemini-Chatbot-with-LangSmith-Monitoring/blob/main/demo_app_screenshots/Screenshot_3-6-2026_19121_geminitor-smart-gemini-chatbot-with-lang-smith--kshirsagarrutuj.replit.app.jpeg)
+
 ---
 
 

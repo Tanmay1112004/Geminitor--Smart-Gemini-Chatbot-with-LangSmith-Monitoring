@@ -145,6 +145,6 @@ MIT
 
 ---
 
-Built by  🚀
+Built by Tanmay 🚀
 
 ---

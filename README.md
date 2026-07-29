@@ -59,7 +59,7 @@ FastAPI serves both the API (`/api/*`) and the frontend static files (`/`) from 
 ### 1. Clone the repo
 
 ```bash
-git clone https://github.com/Tanmay1112004/geminitor-pro.git
+git clone https://github.com//geminitor-pro.git
 cd geminitor-pro
 ```
 
